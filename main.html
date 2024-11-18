@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Poke-deck - demo</title>
+</head>
+<body>
+
+  <h1>Get Card by ID - Demo</h1>
+
+  <!-- Input field and submit button -->
+  <input type="text" id="userInput" placeholder="Enter a query">
+  <button onclick="sendRequest()">Submit</button>
+
+  <!-- Section to display the response -->
+  <div id="response"></div>
+
+  <script>
+    // Function to send the GET request
+    function sendRequest() {
+      // Get the input value
+      const query = document.getElementById("userInput").value;
+
+      // The URL for the external service
+      const url = `http://localhost:8080/poke-deck/getcardbyid?id=${encodeURIComponent(query)}`;
+
+      // Send GET request using fetch with headers
+      fetch(url, {
+        method: 'GET'
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok ' + response.statusText);
+          }
+          return response.json(); // Assuming the response is JSON
+        })
+        .then(data => {
+            const obj = JSON.parse(JSON.stringify(data, null, 2))
+          // Display the response data on the webpage
+          document.getElementById("response").innerHTML = `<img src="${obj.images.large}" alt="Pokemon Card Image"><pre>${JSON.stringify(data, null, 2)}</pre>`;
+        })
+        .catch(error => {
+          // Display any errors
+          document.getElementById("response").innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+        });
+    }
+  </script>
+
+</body>
+</html>
